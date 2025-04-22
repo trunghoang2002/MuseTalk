@@ -272,10 +272,10 @@ If ffmpeg is not found, please install it first:
 ##### Linux Environment
 ```bash
 # MuseTalk 1.5 (Recommended)
-sh inference.sh v1.5 normal
+sh inference.sh v1.5 normal 0 use_float16 (optional)
 
 # MuseTalk 1.0
-sh inference.sh v1.0 normal
+sh inference.sh v1.0 normal 0 use_float16 (optional)
 ```
 
 ##### Windows Environment
@@ -296,10 +296,10 @@ python -m scripts.inference --inference_config configs\inference\test.yaml --res
 ##### Linux Environment
 ```bash
 # MuseTalk 1.5 (Recommended)
-sh inference.sh v1.5 realtime
+sh inference.sh v1.5 realtime 0 use_float16 (optional)
 
 # MuseTalk 1.0
-sh inference.sh v1.0 realtime
+sh inference.sh v1.0 realtime 0 use_float16 (optional)
 ```
 
 ##### Windows Environment
@@ -340,6 +340,9 @@ Both Linux and Windows users can launch the demo using the following command. Pl
 ```bash
 # You can remove --use_float16 for better quality, but it will increase VRAM usage and inference time
 python app.py --use_float16 --ffmpeg_path ffmpeg-master-latest-win64-gpl-shared\bin
+
+# Linux Environment
+sh app.sh 1 use_float16
 ```
 
 ## Training

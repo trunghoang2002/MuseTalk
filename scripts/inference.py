@@ -39,6 +39,7 @@ def main(args):
             print("Warning: Unable to find ffmpeg, please ensure ffmpeg is properly installed")
     
     # Set computing device
+    print("Using device", args.gpu_id)
     device = torch.device(f"cuda:{args.gpu_id}" if torch.cuda.is_available() else "cpu")
     # Load model weights
     vae, unet, pe = load_all_model(
@@ -51,6 +52,7 @@ def main(args):
 
     # Convert models to half precision if float16 is enabled
     if args.use_float16:
+        print("Use float 16")
         pe = pe.half()
         vae.vae = vae.vae.half()
         unet.model = unet.model.half()

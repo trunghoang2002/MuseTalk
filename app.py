@@ -32,6 +32,13 @@ from transformers import WhisperModel
 ProjectDir = os.path.abspath(os.path.dirname(__file__))
 CheckpointsDir = os.path.join(ProjectDir, "models")
 
+# Tạo thư mục tạm an toàn
+safe_tmp_dir = os.path.abspath("./gradio_temp")
+os.makedirs(safe_tmp_dir, exist_ok=True)
+
+# Gán biến môi trường để Gradio dùng
+os.environ["GRADIO_TEMP_DIR"] = safe_tmp_dir
+
 @torch.no_grad()
 def debug_inpainting(video_path, bbox_shift, extra_margin=10, parsing_mode="jaw", 
                     left_cheek_width=90, right_cheek_width=90):
@@ -399,7 +406,7 @@ vae, unet, pe = load_all_model(
 # Parse command line arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("--ffmpeg_path", type=str, default=r"ffmpeg-master-latest-win64-gpl-shared\bin", help="Path to ffmpeg executable")
-parser.add_argument("--ip", type=str, default="127.0.0.1", help="IP address to bind to")
+parser.add_argument("--ip", type=str, default="0.0.0.0", help="IP address to bind to")
 parser.add_argument("--port", type=int, default=7860, help="Port to bind to")
 parser.add_argument("--share", action="store_true", help="Create a public link")
 parser.add_argument("--use_float16", action="store_true", help="Use float16 for faster inference")
@@ -501,7 +508,7 @@ with gr.Blocks(css=css) as demo:
 
     with gr.Row():
         with gr.Column():
-            audio = gr.Audio(label="Drving Audio",type="filepath")
+            audio = gr.Audio(label="Driving Audio",type="filepath")
             video = gr.Video(label="Reference Video",sources=['upload'])
             bbox_shift = gr.Number(label="BBox_shift value, px", value=0)
             extra_margin = gr.Slider(label="Extra Margin", minimum=0, maximum=40, value=10, step=1)

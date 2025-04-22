@@ -2,19 +2,26 @@
 
 # This script runs inference based on the version and mode specified by the user.
 # Usage:
-# To run v1.0 inference: sh inference.sh v1.0 [normal|realtime]
-# To run v1.5 inference: sh inference.sh v1.5 [normal|realtime]
+# To run v1.0 inference: sh inference.sh v1.0 [normal|realtime] [0|1|...] [use_float16]
+# To run v1.5 inference: sh inference.sh v1.5 [normal|realtime] [0|1|...] [use_float16]
 
 # Check if the correct number of arguments is provided
-if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 <version> <mode>"
-    echo "Example: $0 v1.0 normal or $0 v1.5 realtime"
+if [ "$#" -gt 4 ]; then
+    echo "Too many arguments."
+    echo "Usage: $0 <version> <mode> <gpu_id> <use_float16 (optional)>"
+    echo "Example: $0 v1.0 normal 0 use_float16 or $0 v1.5 realtime 1"
     exit 1
 fi
 
 # Get the version and mode from the user input
 version=$1
 mode=$2
+
+# Get gpu_id
+gpu_id=$3
+
+# Use float 16
+use_float16=$4
 
 # Validate mode
 if [ "$mode" != "normal" ] && [ "$mode" != "realtime" ]; then
@@ -68,5 +75,11 @@ if [ "$mode" = "realtime" ]; then
     --version $version_arg"
 fi
 
+# Add use float 16
+if [ "$use_float16" != "" ] && [ "$mode" = "normal" ]; then
+    cmd_args="$cmd_args \
+    --use_float16"
+fi
+
 # Run inference
-python3 -m $script_name $cmd_args
+CUDA_VISIBLE_DEVICES=$gpu_id python3 -m $script_name $cmd_args
